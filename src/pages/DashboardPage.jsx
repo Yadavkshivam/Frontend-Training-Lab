@@ -11,7 +11,7 @@ export default function DashboardPage({ challenges, completedIds, onOpenGenerate
     <div className="p-6 max-w-7xl mx-auto">
       {/* Welcome section */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Welcome back, Developer! 👋</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Welcome back, Learner! 👋</h1>
         <p className="text-slate-500 text-sm mt-1">Continue where you left off or start a new challenge.</p>
       </div>
 
