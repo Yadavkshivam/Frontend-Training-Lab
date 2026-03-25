@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/* Custom scrollbar for code editor */
+.code-editor::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.code-editor::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+.code-editor::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+.code-editor::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Preview iframe reset */
+.preview-frame {
+  border: none;
+  background: white;
+}
+
+/* Toast slide-up animation */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
