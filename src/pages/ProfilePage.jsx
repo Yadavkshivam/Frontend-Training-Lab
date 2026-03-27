@@ -24,10 +24,10 @@ export default function ProfilePage({ challenges, completedIds }) {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
         <div className="flex items-center gap-5 mb-6">
           <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xl font-bold shrink-0">
-            JD
+            SY
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-800">Junior Developer</h2>
+            <h2 className="text-lg font-bold text-slate-800">Shivam Yadav</h2>
             <p className="text-sm text-slate-400">Frontend Trainee • Started March 2026</p>
             <div className="flex gap-2 mt-2">
               <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-blue-50 text-blue-600">
