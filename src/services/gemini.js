@@ -139,6 +139,47 @@ Respond with ONLY valid JSON — no markdown fences, no explanation:
 }
 
 /**
+ * Ask Gemini to generate 10 practice questions for a given module topic.
+ * Returns an array of 10 question objects.
+ */
+export async function generateModuleQuestions(topic) {
+  const prompt = `You are a frontend best-practices trainer. Generate exactly 10 practice questions for the topic: "${topic}".
+
+Each question must teach a real-world frontend naming or methodology best practice.
+
+Return ONLY valid JSON — no markdown fences, no explanation — with this exact shape:
+[
+  {
+    "id": 1,
+    "question": "Problem statement explaining what is wrong and what the user should fix",
+    "incorrectCode": "HTML/CSS code snippet with the bad practice",
+    "correctCode": "HTML/CSS code snippet with the corrected version",
+    "explanation": "Why the original code was wrong and why the fix is better (2-3 sentences)",
+    "hint": "A single helpful hint that guides without giving the full answer"
+  }
+]
+
+Rules:
+- Questions must be practical and real-world
+- incorrectCode and correctCode should be short HTML snippets (5-15 lines max)
+- Explanations should be educational, clear, and professional
+- Hints should nudge, not reveal the answer
+- All 10 questions must be distinct — no repetition
+- For BEM topics: cover Block, Element (double underscore), and Modifier (double hyphen) patterns
+- For Naming Convention topics: cover readability, consistency, semantic meaning, and avoiding cryptic abbreviations`;
+
+  return await withModelFallback(async (model) => {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    const parsed = JSON.parse(cleanJson(text));
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      throw new Error("Invalid module questions format returned by Gemini.");
+    }
+    return parsed;
+  });
+}
+
+/**
  * Ask Gemini to evaluate the user's code against the challenge.
  * Returns { correct: boolean, score: number, feedback: string }
  */

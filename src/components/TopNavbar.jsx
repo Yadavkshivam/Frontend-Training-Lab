@@ -68,7 +68,7 @@ export default function Navbar({ onToggleSidebar, completedCount, totalCount, ap
 
         {/* User avatar */}
         <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
-          JD
+          SY
         </div>
       </div>
     </header>
