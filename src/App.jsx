@@ -5,6 +5,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ChallengePage from "./pages/ChallengePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import ProfilePage from "./pages/ProfilePage";
+import PracticePage from "./pages/PracticePage";
 import ApiKeyModal from "./components/ApiKeyModal";
 import GenerateChallengeModal from "./components/GenerateChallengeModal";
 import defaultChallenges from "./data/challenges";
@@ -126,6 +127,9 @@ function App() {
             path="/profile"
             element={<ProfilePage challenges={challenges} completedIds={completedIds} />}
           />
+          <Route path="/practice" element={<PracticePage />} />
+          <Route path="/practice/:moduleId" element={<PracticePage />} />
+          <Route path="/practice/:moduleId/:qIndex" element={<PracticePage />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
