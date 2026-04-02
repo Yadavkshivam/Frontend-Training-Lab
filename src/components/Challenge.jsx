@@ -36,7 +36,6 @@ export default function Challenge({
     str.replace(/\s+/g, " ").replace(/\s*=\s*/g, "=").trim().toLowerCase();
 
   const handleValidate = useCallback(async () => {
-    // ── Try AI validation first ──
     if (isGeminiReady()) {
       setIsValidating(true);
       setResult(null);

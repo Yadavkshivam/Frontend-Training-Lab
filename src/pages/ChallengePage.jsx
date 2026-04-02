@@ -11,7 +11,7 @@ export default function ChallengePage({ challenges, onMarkCompleted, onOpenGener
 
   const challengeIndex = challenges.findIndex((c) => c.id === Number(id));
   const challenge = challenges[challengeIndex];
-
+  
   // Redirect if challenge not found
   if (!challenge) {
     return (
