@@ -45,7 +45,7 @@ export default function DashboardPage({ challenges, completedIds, onOpenGenerate
       </div>
 
       {/* Challenge grid */}
-      <div className="flex items-center justify-between mb-5">
+      {/* <div className="flex items-center justify-between mb-5">
         <h2 className="text-lg font-semibold text-slate-800">All Challenges</h2>
         <button
           onClick={onOpenGenerateModal}
@@ -57,9 +57,9 @@ export default function DashboardPage({ challenges, completedIds, onOpenGenerate
           </svg>
           Generate with AI
         </button>
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {challenges.map((c) => (
           <ChallengeCard
             key={c.id}
@@ -67,7 +67,7 @@ export default function DashboardPage({ challenges, completedIds, onOpenGenerate
             status={completedIds.has(c.id) ? "completed" : "pending"}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* ── Practice Modules ── */}
       <div className="mt-10">

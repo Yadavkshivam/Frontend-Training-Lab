@@ -36,7 +36,6 @@ export default function Challenge({
     str.replace(/\s+/g, " ").replace(/\s*=\s*/g, "=").trim().toLowerCase();
 
   const handleValidate = useCallback(async () => {
-    // ── Try AI validation first ──
     if (isGeminiReady()) {
       setIsValidating(true);
       setResult(null);
@@ -166,16 +165,27 @@ export default function Challenge({
           }}
         />
       </div>
-
-      {/* Split Editor/Preview */}
-      <div className="flex-1 flex gap-4 px-6 pb-4 min-h-0">
+      {/* first  div */}
+      <div className="flex-1 flex gap-4 px-6 pb-4 min-h-0 ">
         {/* Left — Code Editor */}
         <div className="flex-1 flex flex-col min-w-0">
           <CodeEditor code={code} onChange={setCode} />
         </div>
 
         {/* Right — Live Preview */}
+        <div className="flex-1 flex flex-col min-w-0 ">
+          <Preview code={code} />
+        </div>
+      </div>
+      {/* Split Editor/Preview */}
+      <div className="flex-1 flex gap-4 px-6 pb-4 min-h-0 ">
+        {/* Left — Code Editor */}
         <div className="flex-1 flex flex-col min-w-0">
+          <CodeEditor code={code} onChange={setCode} />
+        </div>
+
+        {/* Right — Live Preview */}
+        <div className="flex-1 flex flex-col min-w-0 ">
           <Preview code={code} />
         </div>
       </div>

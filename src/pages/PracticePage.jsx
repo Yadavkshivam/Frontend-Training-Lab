@@ -6,9 +6,29 @@ import InstructionPanel from "../components/InstructionPanel";
 import { isGeminiReady, validateWithAI, generateModuleQuestions } from "../services/gemini";
 import { namingModule } from "../modules/namingModule";
 import { bemModule } from "../modules/bemModule";
+import { flexboxModule } from "../modules/flexboxModule";
+import { gridModule } from "../modules/gridModule";
+import { responsiveModule } from "../modules/responsiveModule";
+import { specificityModule } from "../modules/specificityModule";
+import { semanticsModule } from "../modules/semanticsModule";
+import { animationsModule } from "../modules/animationsModule";
+import { typographyModule } from "../modules/typographyModule";
+import { boxModelModule } from "../modules/boxModelModule";
+import { cssVariablesModule } from "../modules/cssVariablesModule";
+import { pseudoModule } from "../modules/pseudoModule";
+import { filtersModule } from "../modules/filtersModule";
+import { accessibilityModule } from "../modules/accessibilityModule";
+import { logicalPropertiesModule } from "../modules/logicalPropertiesModule";
+import ExpectedPreview from "../components/ExpectedPreview";
 
 // ── Static registry ───────────────────────────────────────────────────────────
-const STATIC_MODULES = [namingModule, bemModule];
+const STATIC_MODULES = [
+  namingModule, bemModule, flexboxModule, gridModule,
+  responsiveModule, specificityModule, semanticsModule,
+  animationsModule, typographyModule, boxModelModule,
+  cssVariablesModule, pseudoModule, filtersModule,
+  accessibilityModule, logicalPropertiesModule,
+];
 
 // ── Persist AI modules across route navigations via sessionStorage ────────────
 const SS_KEY = "ai_practice_modules";
@@ -19,12 +39,32 @@ function saveAiModules(modules) {
   try { sessionStorage.setItem(SS_KEY, JSON.stringify(modules)); } catch {}
 }
 
+// ── Persist per-module scores across route navigations ───────────────────────
+// Shape: { [moduleId]: { [questionIndex]: { score, status, feedback } } }
+const SCORES_KEY = "module_scores";
+function loadAllScores() {
+  try { return JSON.parse(sessionStorage.getItem(SCORES_KEY) || "{}"); } catch { return {}; }
+}
+function loadModuleScores(moduleId) {
+  return loadAllScores()[moduleId] || {};
+}
+function saveQuestionScore(moduleId, qIndex, entry) {
+  const all = loadAllScores();
+  all[moduleId] = { ...(all[moduleId] || {}), [qIndex]: entry };
+  try { sessionStorage.setItem(SCORES_KEY, JSON.stringify(all)); } catch {}
+}
+function clearModuleScores(moduleId) {
+  const all = loadAllScores();
+  delete all[moduleId];
+  try { sessionStorage.setItem(SCORES_KEY, JSON.stringify(all)); } catch {}
+}
+
 // All modules combined (static + AI-generated)
 export function getAllModules() {
   return [...STATIC_MODULES, ...loadAiModules()];
 }
 
-// Keep legacy export for DashboardPage
+
 export const MODULE_REGISTRY = STATIC_MODULES;
 
 // ── Helper: colour palette per module colour key ─────────────────────────────
@@ -59,6 +99,54 @@ const palette = {
     btn: "bg-linear-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-rose-200",
     bar: "from-rose-500 to-pink-500",
   },
+  teal: {
+    accent: "bg-teal-500", text: "text-teal-600", bg: "bg-teal-50",
+    badge: "bg-teal-100 text-teal-700", border: "border-teal-200",
+    btn: "bg-linear-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 shadow-teal-200",
+    bar: "from-teal-500 to-cyan-500",
+  },
+  indigo: {
+    accent: "bg-indigo-500", text: "text-indigo-600", bg: "bg-indigo-50",
+    badge: "bg-indigo-100 text-indigo-700", border: "border-indigo-200",
+    btn: "bg-linear-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 shadow-indigo-200",
+    bar: "from-indigo-500 to-blue-500",
+  },
+  orange: {
+    accent: "bg-orange-500", text: "text-orange-600", bg: "bg-orange-50",
+    badge: "bg-orange-100 text-orange-700", border: "border-orange-200",
+    btn: "bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-orange-200",
+    bar: "from-orange-500 to-red-400",
+  },
+  sky: {
+    accent: "bg-sky-500", text: "text-sky-600", bg: "bg-sky-50",
+    badge: "bg-sky-100 text-sky-700", border: "border-sky-200",
+    btn: "bg-linear-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 shadow-sky-200",
+    bar: "from-sky-500 to-blue-400",
+  },
+  fuchsia: {
+    accent: "bg-fuchsia-500", text: "text-fuchsia-600", bg: "bg-fuchsia-50",
+    badge: "bg-fuchsia-100 text-fuchsia-700", border: "border-fuchsia-200",
+    btn: "bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 shadow-fuchsia-200",
+    bar: "from-fuchsia-500 to-purple-500",
+  },
+  violet: {
+    accent: "bg-violet-500", text: "text-violet-600", bg: "bg-violet-50",
+    badge: "bg-violet-100 text-violet-700", border: "border-violet-200",
+    btn: "bg-linear-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-200",
+    bar: "from-violet-500 to-purple-500",
+  },
+  cyan: {
+    accent: "bg-cyan-500", text: "text-cyan-600", bg: "bg-cyan-50",
+    badge: "bg-cyan-100 text-cyan-700", border: "border-cyan-200",
+    btn: "bg-linear-to-r from-cyan-500 to-sky-600 hover:from-cyan-600 hover:to-sky-700 shadow-cyan-200",
+    bar: "from-cyan-500 to-sky-500",
+  },
+  lime: {
+    accent: "bg-lime-500", text: "text-lime-600", bg: "bg-lime-50",
+    badge: "bg-lime-100 text-lime-700", border: "border-lime-200",
+    btn: "bg-linear-to-r from-lime-500 to-green-500 hover:from-lime-600 hover:to-green-600 shadow-lime-200",
+    bar: "from-lime-500 to-green-400",
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -92,6 +180,11 @@ export default function PracticePage() {
   // ── /practice/:moduleId — question grid ───────────────────────────────────
   if (qIndex === undefined) {
     return <ModuleQuestionsPage module={mod} />;
+  }
+
+  // ── /practice/:moduleId/results — score summary ───────────────────────────
+  if (qIndex === "results") {
+    return <ModuleResultsPage module={mod} />;
   }
 
   // ── /practice/:moduleId/:qIndex — editor ──────────────────────────────────
@@ -484,6 +577,13 @@ function CreateModuleModal({ onClose, onCreated }) {
 function ModuleQuestionsPage({ module: mod }) {
   const navigate = useNavigate();
   const c = palette[mod.color] || palette.blue;
+  const scores = loadModuleScores(mod.id);
+  const attempted = Object.keys(scores).length;
+  const correct = Object.values(scores).filter((s) => s.status === "correct").length;
+  const avgScore = attempted > 0
+    ? Math.round(Object.values(scores).reduce((sum, s) => sum + (s.score || 0), 0) / attempted)
+    : null;
+  const allDone = attempted >= mod.questions.length;
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -499,19 +599,34 @@ function ModuleQuestionsPage({ module: mod }) {
       </button>
 
       {/* Module header */}
-      <div className="flex items-center gap-4 mb-8">
-        <div className={`w-14 h-14 rounded-2xl ${c.bg} flex items-center justify-center text-3xl`}>
-          {mod.icon}
-        </div>
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-slate-800">{mod.title}</h1>
-            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${c.badge}`}>
-              {mod.difficulty}
-            </span>
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div className="flex items-center gap-4">
+          <div className={`w-14 h-14 rounded-2xl ${c.bg} flex items-center justify-center text-3xl shrink-0`}>
+            {mod.icon}
           </div>
-          <p className="text-slate-500 text-sm">{mod.description}</p>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl font-bold text-slate-800">{mod.title}</h1>
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${c.badge}`}>
+                {mod.difficulty}
+              </span>
+            </div>
+            <p className="text-slate-500 text-sm">{mod.description}</p>
+          </div>
         </div>
+        {/* View Results button — visible once any question is attempted */}
+        {attempted > 0 && (
+          <button
+            onClick={() => navigate(`/practice/${mod.id}/results`)}
+            className={`shrink-0 flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-xl
+                        bg-linear-to-r ${c.btn} shadow-sm transition-all cursor-pointer`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            {allDone ? "See Final Score" : `Score (${attempted}/${mod.questions.length})`}
+          </button>
+        )}
       </div>
 
       {/* Stats row */}
@@ -533,10 +648,19 @@ function ModuleQuestionsPage({ module: mod }) {
           <p className="text-xs text-slate-500 mt-0.5">Medium</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-2xl font-bold text-blue-600">
-            {mod.questions.filter((q) => isGeminiReady() || true).length > 0 ? "AI ✓" : "Local"}
-          </p>
-          <p className="text-xs text-slate-500 mt-0.5">Validation</p>
+          {avgScore !== null ? (
+            <>
+              <p className={`text-2xl font-bold ${avgScore >= 70 ? "text-emerald-600" : avgScore >= 40 ? "text-amber-600" : "text-red-500"}`}>
+                {avgScore}%
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">{correct}/{attempted} Correct</p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-bold text-slate-300">—</p>
+              <p className="text-xs text-slate-500 mt-0.5">Not started</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -549,6 +673,7 @@ function ModuleQuestionsPage({ module: mod }) {
             question={q}
             index={idx}
             color={mod.color}
+            scoreEntry={scores[idx]}
             onClick={() => navigate(`/practice/${mod.id}/${idx}`)}
           />
         ))}
@@ -558,32 +683,45 @@ function ModuleQuestionsPage({ module: mod }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// QuestionCard — mirrors ChallengeCard style
+// QuestionCard — mirrors ChallengeCard style + score indicator
 // ─────────────────────────────────────────────────────────────────────────────
-function QuestionCard({ question, index, color, onClick }) {
+function QuestionCard({ question, index, color, scoreEntry, onClick }) {
   const c = palette[color] || palette.blue;
   const diffLower = question.difficulty?.toLowerCase();
+  const isCorrect  = scoreEntry?.status === "correct";
+  const isAttempted = !!scoreEntry;
+
   return (
     <div
       onClick={onClick}
       className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md
                  transition-all duration-200 overflow-hidden cursor-pointer"
     >
-      <div className={`h-1 w-full ${c.accent}`} />
+      <div className={`h-1 w-full ${isCorrect ? "bg-emerald-500" : isAttempted ? "bg-red-400" : c.accent}`} />
       <div className="p-5">
         <div className="flex items-start justify-between mb-3">
-          <div className={`w-9 h-9 rounded-xl ${c.bg} ${c.text} flex items-center justify-center font-bold text-sm`}>
-            {index + 1}
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm
+            ${isCorrect ? "bg-emerald-50 text-emerald-600" : isAttempted ? "bg-red-50 text-red-500" : `${c.bg} ${c.text}`}`}>
+            {isCorrect ? "✓" : isAttempted ? "✗" : index + 1}
           </div>
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-            diffLower === "easy"
-              ? "bg-emerald-100 text-emerald-700"
-              : diffLower === "medium"
-              ? "bg-amber-100 text-amber-700"
-              : "bg-red-100 text-red-700"
-          }`}>
-            {question.difficulty}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {isAttempted && (
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                isCorrect ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"
+              }`}>
+                {scoreEntry.score ?? (isCorrect ? 100 : 0)}/100
+              </span>
+            )}
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+              diffLower === "easy"
+                ? "bg-emerald-100 text-emerald-700"
+                : diffLower === "medium"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-red-100 text-red-700"
+            }`}>
+              {question.difficulty}
+            </span>
+          </div>
         </div>
         <h3 className={`text-sm font-semibold text-slate-800 mb-1.5 group-hover:${c.text} transition-colors line-clamp-2`}>
           {question.title}
@@ -593,9 +731,12 @@ function QuestionCard({ question, index, color, onClick }) {
         </p>
         <button
           onClick={(e) => { e.stopPropagation(); onClick(); }}
-          className={`w-full py-2 text-xs font-semibold text-white rounded-xl ${c.btn} transition-all shadow-sm cursor-pointer`}
+          className={`w-full py-2 text-xs font-semibold text-white rounded-xl ${
+            isCorrect ? "bg-linear-to-r from-emerald-500 to-teal-500" :
+            isAttempted ? "bg-linear-to-r from-red-400 to-rose-500" : c.btn
+          } transition-all shadow-sm cursor-pointer`}
         >
-          Start Challenge →
+          {isCorrect ? "✓ Solved — Retry" : isAttempted ? "✗ Try Again" : "Start Challenge →"}
         </button>
       </div>
     </div>
@@ -612,8 +753,10 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
   const isFirst = questionIndex === 0;
   const isLast = questionIndex === mod.questions.length - 1;
 
+  // Restore previous score if re-attempting
+  const prevScore = loadModuleScores(mod.id)[questionIndex];
   const [code, setCode] = useState(question.initialCode);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(prevScore || null);
   const [showHint, setShowHint] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
   const [isValidating, setIsValidating] = useState(false);
@@ -627,11 +770,13 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
       setResult(null);
       try {
         const aiResult = await validateWithAI(question, code);
-        setResult({
+        const entry = {
           status: aiResult.correct ? "correct" : "wrong",
           feedback: aiResult.feedback,
           score: aiResult.score,
-        });
+        };
+        setResult(entry);
+        saveQuestionScore(mod.id, questionIndex, entry);
         return;
       } catch (err) {
         console.error("AI validation failed, falling back to local:", err);
@@ -644,7 +789,9 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
     const userNorm = normalize(code);
     const solNorm = normalize(question.solutionCode);
     if (userNorm === solNorm) {
-      setResult({ status: "correct", feedback: "Perfect match!", score: 100 });
+      const entry = { status: "correct", feedback: "Perfect match!", score: 100 };
+      setResult(entry);
+      saveQuestionScore(mod.id, questionIndex, entry);
       return;
     }
     const extractClasses = (html) => {
@@ -654,14 +801,16 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
     const userClasses = extractClasses(userNorm);
     const solClasses = extractClasses(solNorm);
     const isCorrect = JSON.stringify(userClasses) === JSON.stringify(solClasses);
-    setResult({
+    const entry = {
       status: isCorrect ? "correct" : "wrong",
       feedback: isCorrect
         ? "All classes match the expected solution!"
         : "Some classes don't match. Check your class names carefully.",
       score: isCorrect ? 100 : 0,
-    });
-  }, [code, question]);
+    };
+    setResult(entry);
+    saveQuestionScore(mod.id, questionIndex, entry);
+  }, [code, question, mod.id, questionIndex]);
 
   const handleReset = () => {
     setCode(question.initialCode);
@@ -727,7 +876,12 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
         <div className="flex-1 flex flex-col min-w-0">
           <Preview code={code} />
         </div>
+       <div className="flex-1 flex flex-col min-w-0">
+          <ExpectedPreview code={question.solutionCode} />
+        </div>
       </div>
+
+      
 
       {/* Bottom action bar */}
       <div className="bg-white border-t border-slate-200 px-6 py-3 shrink-0">
@@ -816,14 +970,31 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
               Previous
             </button>
             <button
-              onClick={() => isLast ? navigate(`/practice/${mod.id}`) : goTo(questionIndex + 1)}
+              onClick={() => {
+                if (isLast) {
+                  navigate(`/practice/${mod.id}/results`);
+                } else {
+                  goTo(questionIndex + 1);
+                }
+              }}
               className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer
                 text-white bg-linear-to-r ${c.btn} shadow-sm`}
             >
-              {isLast ? "Back to Module" : "Next Question"}
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+              {isLast ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Finish & See Results
+                </>
+              ) : (
+                <>
+                  Next Question
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -832,3 +1003,160 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ModuleResultsPage — full score summary after completing all questions
+// ─────────────────────────────────────────────────────────────────────────────
+function ModuleResultsPage({ module: mod }) {
+  const navigate = useNavigate();
+  const c = palette[mod.color] || palette.blue;
+  const scores = loadModuleScores(mod.id);
+  const attempted = Object.keys(scores).length;
+  const correct = Object.values(scores).filter((s) => s.status === "correct").length;
+  const totalScore = attempted > 0
+    ? Math.round(Object.values(scores).reduce((sum, s) => sum + (s.score || 0), 0) / mod.questions.length)
+    : 0;
+
+  const grade =
+    totalScore >= 90 ? { label: "Excellent!", emoji: "🏆", color: "text-yellow-500" } :
+    totalScore >= 70 ? { label: "Great Job!", emoji: "🎉", color: "text-emerald-500" } :
+    totalScore >= 50 ? { label: "Good Effort", emoji: "👍", color: "text-blue-500" } :
+    { label: "Keep Practicing", emoji: "💪", color: "text-amber-500" };
+
+  const handleRetry = () => {
+    clearModuleScores(mod.id);
+    navigate(`/practice/${mod.id}/0`);
+  };
+
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      {/* Back */}
+      <button
+        onClick={() => navigate(`/practice/${mod.id}`)}
+        className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 mb-6 transition-colors cursor-pointer"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to {mod.title}
+      </button>
+
+      {/* Hero score card */}
+      <div className={`bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6`}>
+        <div className={`h-2 w-full bg-linear-to-r ${c.bar}`} />
+        <div className="p-8 text-center">
+          <div className="text-6xl mb-3">{grade.emoji}</div>
+          <h1 className={`text-2xl font-extrabold ${grade.color} mb-1`}>{grade.label}</h1>
+          <p className="text-slate-500 text-sm mb-6">
+            You completed <strong className="text-slate-700">{mod.title}</strong>
+          </p>
+
+          {/* Big score ring */}
+          <div className="flex items-center justify-center gap-10 mb-6">
+            <div className="text-center">
+              <p className={`text-5xl font-extrabold ${totalScore >= 70 ? "text-emerald-500" : totalScore >= 40 ? "text-amber-500" : "text-red-500"}`}>
+                {totalScore}%
+              </p>
+              <p className="text-xs text-slate-400 mt-1">Overall Score</p>
+            </div>
+            <div className="w-px h-12 bg-slate-200" />
+            <div className="text-center">
+              <p className="text-5xl font-extrabold text-emerald-500">{correct}</p>
+              <p className="text-xs text-slate-400 mt-1">Correct</p>
+            </div>
+            <div className="w-px h-12 bg-slate-200" />
+            <div className="text-center">
+              <p className="text-5xl font-extrabold text-red-400">{attempted - correct}</p>
+              <p className="text-xs text-slate-400 mt-1">Incorrect</p>
+            </div>
+            <div className="w-px h-12 bg-slate-200" />
+            <div className="text-center">
+              <p className="text-5xl font-extrabold text-slate-300">{mod.questions.length - attempted}</p>
+              <p className="text-xs text-slate-400 mt-1">Skipped</p>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden mb-6">
+            <div
+              className={`h-full bg-linear-to-r ${c.bar} rounded-full transition-all duration-700`}
+              style={{ width: `${totalScore}%` }}
+            />
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={handleRetry}
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-600
+                         bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Retry Module
+            </button>
+            <button
+              onClick={() => navigate("/practice")}
+              className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white
+                          bg-linear-to-r ${c.btn} rounded-xl shadow-sm transition-all cursor-pointer`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              All Modules
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Per-question breakdown */}
+      <h2 className="text-lg font-semibold text-slate-800 mb-4">Question Breakdown</h2>
+      <div className="space-y-3">
+        {mod.questions.map((q, idx) => {
+          const entry = scores[idx];
+          const qCorrect = entry?.status === "correct";
+          const qSkipped = !entry;
+          return (
+            <div
+              key={q.id}
+              className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4"
+            >
+              {/* Status icon */}
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${
+                qCorrect ? "bg-emerald-50 text-emerald-600" :
+                qSkipped ? "bg-slate-100 text-slate-400" : "bg-red-50 text-red-500"
+              }`}>
+                {qCorrect ? "✓" : qSkipped ? idx + 1 : "✗"}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-slate-800 truncate">{q.title}</p>
+                {entry && (
+                  <p className="text-xs text-slate-400 mt-0.5 truncate">{entry.feedback}</p>
+                )}
+                {qSkipped && <p className="text-xs text-slate-400 mt-0.5">Not attempted</p>}
+              </div>
+
+              {/* Score badge + retry */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                  qCorrect ? "bg-emerald-100 text-emerald-700" :
+                  qSkipped ? "bg-slate-100 text-slate-500" : "bg-red-100 text-red-600"
+                }`}>
+                  {qSkipped ? "—" : `${entry.score ?? (qCorrect ? 100 : 0)}/100`}
+                </span>
+                <button
+                  onClick={() => navigate(`/practice/${mod.id}/${idx}`)}
+                  className="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100"
+                >
+                  {qSkipped ? "Try" : "Retry"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
