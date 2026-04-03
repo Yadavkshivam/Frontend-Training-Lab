@@ -24,7 +24,7 @@ export const namingModule = {
   <p class="text2 text-slate-500 mt-1">We build amazing things.</p>
 </div>`,
       solutionCode: `<div class="page-header bg-white p-6 rounded-lg shadow">
-  <h1 class="header-title text-2xl font-bold text-slate-800">Welcome to Our Site</h1>
+  <h1 class="header-title text-2xl font-bold text-slate-800">Welcome to our side</h1>
   <p class="header-subtitle text-slate-500 mt-1">We build amazing things.</p>
 </div>`,
       hints: [

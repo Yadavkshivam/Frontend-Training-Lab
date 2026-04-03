@@ -19,6 +19,7 @@ import { pseudoModule } from "../modules/pseudoModule";
 import { filtersModule } from "../modules/filtersModule";
 import { accessibilityModule } from "../modules/accessibilityModule";
 import { logicalPropertiesModule } from "../modules/logicalPropertiesModule";
+import ExpectedPreview from "../components/ExpectedPreview";
 
 // ── Static registry ───────────────────────────────────────────────────────────
 const STATIC_MODULES = [
@@ -875,7 +876,12 @@ function ModuleQuestionEditor({ module: mod, questionIndex }) {
         <div className="flex-1 flex flex-col min-w-0">
           <Preview code={code} />
         </div>
+       <div className="flex-1 flex flex-col min-w-0">
+          <ExpectedPreview code={question.solutionCode} />
+        </div>
       </div>
+
+      
 
       {/* Bottom action bar */}
       <div className="bg-white border-t border-slate-200 px-6 py-3 shrink-0">

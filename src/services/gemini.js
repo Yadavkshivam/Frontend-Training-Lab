@@ -179,10 +179,7 @@ Rules:
   });
 }
 
-/**
- * Ask Gemini to evaluate the user's code against the challenge.
- * Returns { correct: boolean, score: number, feedback: string }
- */
+
 export async function validateWithAI(challenge, userCode) {
   const prompt = `You are a frontend code reviewer evaluating a junior developer's solution.
 

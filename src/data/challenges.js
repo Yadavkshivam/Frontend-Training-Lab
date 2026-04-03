@@ -324,4 +324,4 @@ const challenges = [
   },
 ];
 
-export default challenges;
+export default challenges; 
